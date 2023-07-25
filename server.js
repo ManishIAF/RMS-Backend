@@ -38,7 +38,7 @@ const app = express()
 app.use(express.json());
 app.use(cors(
     {
-    origin:'http://localhost:3000',
+    origin:'https://rms-frontend-x9ue.onrender.com',
     credentials: true,
     optionsSuccessStatus: 200,
     Headers:['Origin','X-Api-Key','X-Requested-With','Content-Type','Accept','Authorization']
