@@ -41,11 +41,11 @@ app.use(cors(
     origin:'https://rms-frontend-x9ue.onrender.com',
     credentials: true,
     optionsSuccessStatus: 200,
-    Headers:['Origin','X-Api-Key','X-Requested-With','Content-Type','Accept','Authorization']
+    Headers:['Origin','X-Api-Key','X-Requested-With','Content-Type','Accept','Authorization'],
     // methods: ['GET','HEAD','PUT','PATCH','POST','DELETE'],
     // preflightContinue:false,
     // sameSite: 'lax',
-    // "Access-Control-Allow-Origin": "http://localhost:3000",
+    "Access-Control-Allow-Origin": "https://rms-frontend-x9ue.onrender.com",
     // "Access-Control-Allow-Credentials": "true",
 }
 ));
