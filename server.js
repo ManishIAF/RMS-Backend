@@ -1,5 +1,8 @@
 import 'dotenv/config'
 import express from "express";
+
+const app = express()
+
 import axios from "axios"
 // import http from 'http'
 // import {Server as socketIO} from 'socket.io';
@@ -9,7 +12,6 @@ import cors from 'cors'
 import morgan from 'morgan';
 /* database connection */
 import connect from "./database/connect.js";
-
 
 app.get('/app/*', async (req, res) => {
     try {
@@ -31,9 +33,6 @@ import professorRoute from './router/professorRoute.js'
 import courseRoute from './router/coursesRoute.js'
 import studentProfileRoute from './router/studentProfileRoute.js'
 import prRoute from './router/prRoute.js'
-
-
-const app = express()
 
 // const socketServer = http.createServer(app);
 // const io = new socketIO(socketServer,{
