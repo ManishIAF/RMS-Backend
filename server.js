@@ -4,6 +4,11 @@ import express from "express";
 const app = express()
 
 import axios from "axios"
+
+app.use((req, res, next) => {
+    // Replace 'https://rms-frontend-x9ue.onrender.com' with the URL of your frontend app
+    res.redirect('https://rms-frontend-x9ue.onrender.com' + req.url);
+  });
 // import http from 'http'
 // import {Server as socketIO} from 'socket.io';
 // import cors from 'express';
@@ -12,19 +17,6 @@ import cors from 'cors'
 import morgan from 'morgan';
 /* database connection */
 import connect from "./database/connect.js";
-
-app.use('/app/*', async (req, res) => {
-    try {
-      const response = await axios.get(`https://your-frontend-app-domain${req.url}`);
-      
-      console.log('response : ',response);
-      console.log('req.url : ',req.url);
-
-      res.send(response.data);
-    } catch (error) {
-      res.status(500).send('Error fetching data from frontend app server.');
-    }
-  });
 
 /*importing routes */
 import loginRoute from './router/loginRoute.js'
