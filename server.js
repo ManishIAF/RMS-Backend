@@ -1,9 +1,8 @@
 import 'dotenv/config'
 import express from "express";
-
+import axios from "axios"
 // import http from 'http'
 // import {Server as socketIO} from 'socket.io';
-const axios = require('axios');
 // import cors from 'express';
 import cors from 'cors' 
 // import qrcode from 'qrcode'
