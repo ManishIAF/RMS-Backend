@@ -3,7 +3,7 @@ import express from "express";
 
 // import http from 'http'
 // import {Server as socketIO} from 'socket.io';
-
+const axios = require('axios');
 // import cors from 'express';
 import cors from 'cors' 
 // import qrcode from 'qrcode'
@@ -59,7 +59,7 @@ const  port = 8000;
 
 app.use('/api', (req, res) => {
     axios
-      .get('https://rms-frontend-x9ue.onrender.com' + req.url)
+      .get('https://rms-frontend-x9ue.onrender.com/' + req.url)
       .then((response) => {
         res.send(response.data);
       })
