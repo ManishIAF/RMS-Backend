@@ -4,11 +4,6 @@ import express from "express";
 const app = express()
 
 import axios from "axios"
-
-app.use((req, res, next) => {
-    // Replace 'https://rms-frontend-x9ue.onrender.com' with the URL of your frontend app
-    res.redirect('https://rms-frontend-x9ue.onrender.com' + req.url);
-  });
 // import http from 'http'
 // import {Server as socketIO} from 'socket.io';
 // import cors from 'express';
