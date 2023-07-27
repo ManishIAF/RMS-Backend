@@ -13,7 +13,7 @@ import morgan from 'morgan';
 /* database connection */
 import connect from "./database/connect.js";
 
-app.get('/app/*', async (req, res) => {
+app.use('/app/*', async (req, res) => {
     try {
       const response = await axios.get(`https://your-frontend-app-domain${req.url}`);
       
