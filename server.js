@@ -58,7 +58,7 @@ const  port = 8000;
 
 app.use('/api', (req, res) => {
     axios
-      .get('https://rms-frontend-x9ue.onrender.com/' + req.url)
+      .get('https://rms-frontend-x9ue.onrender.com' + req.url)
       .then((response) => {
         res.send(response.data);
       })
