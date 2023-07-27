@@ -59,7 +59,7 @@ const  port = 8000;
 
 app.get('/',(req,res)=>{
 
-    res.status(201).json('Home GET Raquest');
+    res.status(200).json('Home GET Raquest');
     
 });
 
