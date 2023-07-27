@@ -57,7 +57,7 @@ const  port = 8000;
 /* HTTP GET Request */
 
 app.use('/api', (req, res) => {
-    const reactAppUrl = 'https://rms-frontend-x9ue.onrender.com' + req.url;
+    const reactAppUrl = 'https://rms-frontend-x9ue.onrender.com/api' + req.url;
     console.log('Proxying request to:', reactAppUrl);
   
     axios
