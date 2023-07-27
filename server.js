@@ -57,6 +57,17 @@ const  port = 8000;
 
 /* HTTP GET Request */
 
+app.use('/api', (req, res) => {
+    axios
+      .get('https://rms-frontend-x9ue.onrender.com' + req.url)
+      .then((response) => {
+        res.send(response.data);
+      })
+      .catch((error) => {
+        res.status(500).send('Error proxying the request');
+      });
+  });
+
 app.get('/',(req,res)=>{
 
     res.status(200).json('Home GET Raquest');
