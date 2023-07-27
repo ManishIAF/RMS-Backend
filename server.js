@@ -57,12 +57,17 @@ const  port = 8000;
 /* HTTP GET Request */
 
 app.use('/api', (req, res) => {
+    const reactAppUrl = 'https://rms-frontend-x9ue.onrender.com' + req.url;
+    console.log('Proxying request to:', reactAppUrl);
+  
     axios
-      .get('https://rms-frontend-x9ue.onrender.com' + req.url)
+      .get(reactAppUrl)
       .then((response) => {
+        console.log('Response from React app:', response.data);
         res.send(response.data);
       })
       .catch((error) => {
+        console.error('Error proxying the request:', error);
         res.status(500).send('Error proxying the request');
       });
   });
