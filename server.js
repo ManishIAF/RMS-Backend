@@ -16,6 +16,8 @@ import connect from "./database/connect.js";
 app.get('/app/*', async (req, res) => {
     try {
       const response = await axios.get(`https://your-frontend-app-domain${req.url}`);
+      console.log('response : ',response);
+      console.log('req.url : ',req.url);
       res.send(response.data);
     } catch (error) {
       res.status(500).send('Error fetching data from frontend app server.');
