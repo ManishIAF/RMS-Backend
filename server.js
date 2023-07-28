@@ -25,11 +25,6 @@ import courseRoute from './router/coursesRoute.js'
 import studentProfileRoute from './router/studentProfileRoute.js'
 import prRoute from './router/prRoute.js'
 
-// const socketServer = http.createServer(app);
-// const io = new socketIO(socketServer,{
-//     path: '/api/passwordRecovery'
-// });
-
 /* middleware setup */
 
 app.use(express.json());
@@ -39,11 +34,7 @@ app.use(cors(
     credentials: true,
     optionsSuccessStatus: 200,
     Headers:['Origin','X-Api-Key','X-Requested-With','Content-Type','Accept','Authorization'],
-    // methods: ['GET','HEAD','PUT','PATCH','POST','DELETE'],
-    // preflightContinue:false,
-    // sameSite: 'lax',
     "Access-Control-Allow-Origin": "https://rms-frontend-x9ue.onrender.com",
-    // "Access-Control-Allow-Credentials": "true",
 }
 ));
 
