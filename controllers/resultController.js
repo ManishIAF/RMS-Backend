@@ -354,7 +354,6 @@ const resultUpdate = async(req,res)=>{
 
         const {id} = req.params;
 
-        console.log('called...',id);
         const {Internal,Theory,Practical} = req.body;
 
         const DataToBeUpdated = {

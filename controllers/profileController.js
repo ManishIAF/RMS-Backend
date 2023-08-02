@@ -99,7 +99,7 @@ export async function postProfile(req,res){
             const Body = req.body;
 
             const {email,role} = req.user;
-            // console.log();
+
             let Model
             
             if(role === 'student'){
@@ -113,9 +113,9 @@ export async function postProfile(req,res){
                 Model = professor
             
             }
-// console.log('Model : ',Model);
+
             Model.findOne({email:email},(error,profData)=>{
-// console.log('userInfo : ',userInfo);
+
                 if(error){
     
                     return res.status(500).send('server error');
@@ -147,10 +147,9 @@ export async function postProfile(req,res){
                                 }
                             )
                 
-                            console.log('new : ',newUserInfo);
                         
                         newUserInfo.save((error,userSavedData)=>{
-                console.log('saved data : ',userSavedData);
+
                             if(error){ 
                                 console.log('error : ',error);
                                 
@@ -247,7 +246,7 @@ export async function updateProfile(req,res){
         if(!error){
 
             if(!userInfo?.userInfoId) return res.status(404).send('data not present')
-// console.log('data found')
+
             if(userInfo?.userInfoId){
 
                 if(Body?.profile){

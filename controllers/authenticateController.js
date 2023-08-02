@@ -26,7 +26,7 @@ const authenticate = async(req,res)=>{
 
     const userInfo = await Model.findOne({email:email})
 
-    res.status(200).send({username,profile:userInfo?.profile,firstName:userInfo?.firstName,auth});
+    res.status(200).send({username,profile:userInfo?.profile,firstName:userInfo?.firstName,auth,email});
 
 }
 

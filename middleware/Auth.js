@@ -26,14 +26,13 @@ const Auth = async(req,res,next) => {
         
             if(!refs) {
 
-                return res.status(401).json({error:"Authentication failed..."})
+                return res.status(401).json("Authentication failed...")
             
             }
         
             if(refs){
 
                 req.user = refs       
-        
                 next()
 
             }
@@ -42,7 +41,7 @@ const Auth = async(req,res,next) => {
         
 
     } catch (error) {
-        return res.status(401).json({error:"Authentication failed..."})
+        return res.status(401).send("Authentication failed...")
     }
 
 }

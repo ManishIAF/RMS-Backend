@@ -138,12 +138,10 @@ const courseById = async(req,res)=>{
 
     try {
 
-        // console.log('courseById By Id called')
-        
         const {id} = req.params;
-// console.log('profId : ',id);
+
         professor.findOne({_id:id},(error,profData)=>{
-            // console.log('Name : ',profData?.firstName);
+
             if(error) return res.status(500).send('server error');
         
             if(!profData) return res.status(401).send('not authorised');
@@ -151,8 +149,6 @@ const courseById = async(req,res)=>{
             if(profData){
 
                  course.find({_id:{$in:profData?.coursesId}},(error,courseData)=>{
-
-                    // console.log('courseData : ',courseData);
 
                     if(error) return res.status(500).send('server error');
         
