@@ -6,6 +6,7 @@ import userModule from "../modules/user.module.js";
 const authenticate = async(req,res)=>{
     try {
         const token = req.cookies.validatingToken;
+        console.log('token : ',token)
         if(!token) return res.sendStatus(401);
 
         const {userId} = jwt.verify(token,process.env.JWT_REFRESH_TOKEN_SECRET)
