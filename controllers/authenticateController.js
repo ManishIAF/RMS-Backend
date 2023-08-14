@@ -40,16 +40,8 @@ const authenticate = async(req,res)=>{
         const userInfo = await Model.findOne({email:user?.email})
 
         const accessToken = jwt.sign({userId:user._id},process.env.JWT_ACCESS_TOKEN_SECRET,{expiresIn:'15m'})
-        // const refreshToken = jwt.sign({userId:user._id},process.env.JWT_REFRESH_TOKEN_SECRET,{expiresIn:'7d'})
-        
-        // await userModule.updateOne({_id:user?._id},{refreshToken:refreshToken});
-        
-        return res.status(200)/*.cookie("validatingToken",refreshToken,{
-            httpOnly:true,
-            // sameSite:'None',
-            // secure:false,
-            // path:'/api/authenticate'
-        })*/.send({token:accessToken,username:user?.username,profile:userInfo?.profile,firstName:userInfo?.firstName,auth,email:user?.email})
+ 
+        return res.status(200).send({token:accessToken,username:user?.username,profile:userInfo?.profile,firstName:userInfo?.firstName,auth,email:user?.email})
 
     } catch (error) {
         res.sendStatus(401)

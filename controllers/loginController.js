@@ -31,8 +31,8 @@ import UserModel from '../modules/user.module.js'
 
         res.status(200).cookie("validatingToken",refreshToken,{
             httpOnly:true,
-            // sameSite:'None',
-            // secure:false,
+            sameSite:'None',
+            secure:false,
             // path:'/api/authenticate'
         }).send({
             msg:'login successfully...',
