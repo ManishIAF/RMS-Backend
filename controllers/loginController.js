@@ -1,6 +1,5 @@
 import {compare } from 'bcrypt';
 import jwt from 'jsonwebtoken';
-// import {createAccessToken,createRefreshToken,sendAccessToken,sendRefreshToken} from '../token/tokens.js'
 import UserModel from '../modules/user.module.js'
 
 /** POST:http://localhost:8000/api/login
@@ -33,7 +32,7 @@ import UserModel from '../modules/user.module.js'
             httpOnly:true,
             sameSite:'None',
             secure:true,
-            // path:'/api/authenticate'
+            path:'/api/authenticate'
         }).send({
             msg:'login successfully...',
             token:accessToken
