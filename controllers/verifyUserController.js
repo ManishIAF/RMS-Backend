@@ -6,8 +6,6 @@ const userIdentification = async(req,res)=>{
 
     common.findOne({userId:_id},(error,{userInfoId})=>{
         
-        console.log('in : ',userInfoId);
-
         UserInfoModel.findOne({_id:userInfoId},(error,userInfo)=>{
 
             if(!error){

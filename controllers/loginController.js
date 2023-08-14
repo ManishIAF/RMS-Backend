@@ -1,5 +1,6 @@
 import {compare } from 'bcrypt';
 import jwt from 'jsonwebtoken';
+// import {createAccessToken,createRefreshToken,sendAccessToken,sendRefreshToken} from '../token/tokens.js'
 import UserModel from '../modules/user.module.js'
 
 /** POST:http://localhost:8000/api/login
@@ -11,34 +12,35 @@ import UserModel from '../modules/user.module.js'
  }
  */
  export async function login(req,res){
-    const {username,password} = req.body;
     try {
+
+        const {username,password} = req.body;
         
-        UserModel.findOne({username})
-            .then(user => {
+        const user = await UserModel.findOne({username})
 
-                compare(password,user?.password)
-                .then(async passwordCheck => {
-                    if(!passwordCheck){
-                        return res.status(400).send("password dosn't match")
-                    }
-                        //create jwt token
-                        await UserModel.findOneAndUpdate({username},{session:false},{new:true});
+        if(!user) return res.status(404).send('user not found')
 
-                        const token = jwt.sign({
-                            userId:user?._id,
-                        },process.env.JWT_SECRET,{expiresIn:'24h'})
+        const valid = await compare(password,user.password);
 
-                        return res.status(200).send({
-                            msg:'login successfully...',
-                            username:user?.username,
-                            token
-                        })
+        if(!valid) return res.status(401).send('invalid password');
+        
+        const accessToken = jwt.sign({userId:user._id},process.env.JWT_ACCESS_TOKEN_SECRET,{expiresIn:'15m'})
+        const refreshToken = jwt.sign({userId:user._id},process.env.JWT_REFRESH_TOKEN_SECRET,{expiresIn:'7d'})
 
-                }).catch(error => res.status(401).send("don't have password"))
-            }).catch(error => {return res.status(404).send('username not found')})
+        await UserModel.updateOne({_id:user?._id},{refreshToken:refreshToken});
+
+        res.status(200).cookie("validatingToken",refreshToken,{
+            httpOnly:true,
+            // sameSite:'None',
+            // secure:false,
+            // path:'/api/authenticate'
+        }).send({
+            msg:'login successfully...',
+            token:accessToken
+        })
 
     } catch (error) {
+        console.log('error : ',error)
         return res.status(500).send({error});
     }
 

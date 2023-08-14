@@ -11,7 +11,7 @@ const allStudentGet = async(req,res)=>{
 
     const {semester}=req.query;
 
-    const {email} = req.user;
+    const {role,email} = req.user;
 
     const query = {};
 
@@ -112,7 +112,7 @@ const allStudentGet = async(req,res)=>{
                     }
                   })
 
-                  res.status(200).json(updatedData); 
+                  res.status(200).json({studentData:updatedData,auth:role==='HOD'&&'high'}); 
 
                 }
 
@@ -126,7 +126,7 @@ const allStudentGet = async(req,res)=>{
 
 const studentResult = async(req,res)=>{
   try {
-    const {email,role,_id} = req.user;
+    const {email,role} = req.user;
     const query = {}
     const {id,semester} = req.query;
 
@@ -134,56 +134,66 @@ const studentResult = async(req,res)=>{
       query.studentId = id
     }
 
-    if(role === 'professor' || 'HOD'){
+    if(query?.studentId){
 
-      professor.findOne({email:email},async(error,profData)=>{
+      if(role === 'professor' || 'HOD'){
 
-        if(error) return res.status(500).send('server error');
-    
-        if(!profData) return res.status(401).send('not authorised');
+        professor.findOne({email:email},async(error,profData)=>{
 
-        if(profData){
-            
-            query.department = profData?.department;
-            const data = await results.find(query).populate('courseId')
-            
-            const Data = [];
-            let Agregate = 0
-            for(let studentResult of data){
+          if(error) return res.status(500).send('server error');
+      
+          if(!profData) return res.status(401).send('not authorised');
+
+          if(profData){
               
-              const {_id,Internal,Theory,Practical,Total,courseId:{subject,code:SubjectCode,Semester}} = studentResult;
+              query.department = profData?.department;
+              const data = await results.find(query).populate('courseId')
               
-              if(Number(semester) === Semester){
-              
-                let Percentage = (Total/80)*100;
-                Agregate = Agregate+Total;
-                Data.push({_id,subject,SubjectCode,Internal,Theory,Practical,Total,Percentage,status:(Percentage >= 40)?'Pass':'Fail'});
+              const Data = [];
+              let Agregate = 0
+              for(let studentResult of data){
+                
+                const {_id,Internal,Theory,Practical,Total,courseId:{subject,code:SubjectCode,Semester}} = studentResult;
+                
+                if(Number(semester) === Semester){
+                
+                  let Percentage = (Total/80)*100;
+                  Agregate = Agregate+Total;
+                  Data.push({_id,subject,SubjectCode,Internal,Theory,Practical,Total,Percentage,status:(Percentage >= 40)?'Pass':'Fail'});
 
-              } 
-            }
-            res.status(200).json({Data,Agregate,AgregatePercentage:(Agregate/(80*Data.length))*100});
-    
-        }
-      })
+                } 
+              }
+              return res.status(200).send({Data,Agregate,AgregatePercentage:(Agregate/(80*Data.length))*100});
+      
+          }
+        })
 
+      }
     }
 
-    if(role === 'student'){
+    if(!query?.studentId){
+      if(role === 'student'){
+        const studentData = await student.findOne({email})
+        const data = await results.find({studentId:studentData?._id}).populate('courseId')
 
-      const data = await results.find({_id:_id}).populate('courseId')
-      
-      const Data = data.map((studentResult)=>{
-        let returnedValue = {}
-        const {_id,Internal,Theory,Practical,Total,courseId:{subject,code:SubjectCode,Semester}} = studentResult;
-        if(Number(semester) === Semester){
+        const semesterToCheck = semester?Number(semester):studentData?.Semester
+        const Data = [];
+        let Agregate = 0;
 
-          returnedValue = {_id,subject,SubjectCode,Semester,Internal,Theory,Practical,Total};
+        for(let studentResult of data){
+          const {_id,Internal,Theory,Practical,Total,courseId:{subject,code:SubjectCode,Semester}} = studentResult;
 
+          if(Semester === semesterToCheck){
+          
+            let Percentage = (Total/80)*100;
+            Agregate = Agregate+Total;
+            Data.push({_id,subject,SubjectCode,Internal,Theory,Practical,Total,Percentage,status:(Percentage >= 40)?'Pass':'Fail'});
+          
+          }
         }
-        return returnedValue;
-      })
-      res.status(200).json(Data);
+        return res.status(200).send({Data,Agregate,AgregatePercentage:(Agregate/(80*Data.length))*100});
 
+      }
     }
 
     
@@ -199,44 +209,49 @@ const studentResult = async(req,res)=>{
 const singleStudentGet = async(req,res)=>{
 
   try {
-    const {email,role,_id} = req.user;
+    const {email,role} = req.user;
     const query = {}
     const {rollNumber}=req.params;
-    // const {id} = req.query;
+    const {id} = req.query;
+
     if(rollNumber){
 
       query.Roll_Number = Number(rollNumber);
 
     }
 
-    // if(id){
-    //   query._id = id
-    // }
-
-    if(role === 'professor' || 'HOD'){
-
-      professor.findOne({email:email},async(error,profData)=>{
-
-        if(error) return res.status(500).send('server error');
-    
-        if(!profData) return res.status(401).send('not authorised');
-
-        if(profData){
-            
-            query.department = profData?.department;
-            const data = await student.findOne(query);
-            res.status(200).json(data);
-    
-        }
-      })
-
+    if(id){
+      query._id = id
     }
 
-    if(role === 'student'){
+    if(query?._id || query?.Roll_Number){
+      if(role === 'professor' || 'HOD'){
 
-      const data = await student.findOne({_id:_id})
-      res.status(200).json(data);
+        professor.findOne({email:email},async(error,profData)=>{
 
+          if(error) return res.status(500).send('server error');
+      
+          if(!profData) return res.status(401).send('not authorised');
+
+          if(profData){
+              
+              query.department = profData?.department;
+              const data = await student.findOne(query);
+              res.status(200).send(data);
+      
+          }
+        })
+
+      }
+    }
+
+    if(!query?._id){
+      if(role === 'student'){
+        const data = await student.findOne({email:email})
+        if(!data) return res.status(404).send('student not found')
+        if(data) return res.status(200).send(data);
+
+      }
     }
 
     
@@ -250,7 +265,7 @@ const singleStudentGet = async(req,res)=>{
 }
 
 const studentPost = async(req,res)=>{
-// xyz2580fpw3#K
+// xyz25806&7trU
   try {
 
     const {email,role} = req.user;
@@ -312,8 +327,8 @@ const studentPost = async(req,res)=>{
                 newStudent.save().then(async(savedProfessorData) => {
                 
                   if(savedProfessorData){
-            
-                    await handleMail({firstName,studentEmail,subject:"Professor Authentication",text})
+
+                    await handleMail({firstName,email:studentEmail,subject:"Professor Authentication",text})
             
                     res.status(200).send("student added");
         

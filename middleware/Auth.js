@@ -6,12 +6,12 @@ import UserSchema from "../modules/user.module.js";
 const Auth = async(req,res,next) => {
 
     try {
-
+// console.log('auth cookie : ',req.cookies)
         const token = req.headers.authorization.split(" ")[1];
 
         //retrive the user detailes of the logged in user...
         
-        const decodedToken = verify(token, process.env.JWT_SECRET);
+        const decodedToken = verify(token, process.env.JWT_ACCESS_TOKEN_SECRET);
         const {userId} = decodedToken;
 
         if(!userId){

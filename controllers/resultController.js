@@ -6,7 +6,6 @@ import course from '../modules/courseModel.js';
 const resultAllGet = async(req,res)=>{
 
     const {semester} = req.query;
-    
     const {email} = req.user;
 
     professor.findOne({email:email},(error,profData)=>{

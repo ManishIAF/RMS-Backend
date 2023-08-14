@@ -11,7 +11,7 @@ const studentScema = new mongoose.Schema({
     Roll_Number:Number,
     Regitration_Number:Number,
     ResultId:[{ type: mongoose.Schema.Types.ObjectId, ref: 'result' }],
-    userInfoId:{ type: mongoose.Schema.Types.ObjectId, ref: 'userinfoid' },
+    userInfoId:{ type: mongoose.Schema.Types.ObjectId, ref: 'UserInfo' },
     isCourseSemesterMatched: Boolean
 
 });

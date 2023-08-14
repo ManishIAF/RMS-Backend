@@ -1,22 +1,23 @@
 import 'dotenv/config'
 import express from "express";
+import cookieParser from 'cookie-parser';
+import cors from 'cors' 
+import morgan from 'morgan';
 
 const app = express()
 
-import axios from "axios"
-// import http from 'http'
-// import {Server as socketIO} from 'socket.io';
-// import cors from 'express';
-import cors from 'cors' 
-// import qrcode from 'qrcode'
-import morgan from 'morgan';
+/* middleware setup */
+
+app.use(express.json());
+app.use(cookieParser());
+
 /* database connection */
 import connect from "./database/connect.js";
 
 /*importing routes */
 import loginRoute from './router/loginRoute.js'
 import authenticateRoure from './router/authenticateRoute.js'
-import professorProfileRoute from './router/professorProfileRoute.js'
+import ProfileRoute from './router/ProfileRoute.js'
 import studentRoute from './router/studentRoute.js'
 import resultRoute from './router/resultRoute.js'
 import verifyUserRouter from "./router/verifyUserRoute.js";
@@ -25,16 +26,12 @@ import courseRoute from './router/coursesRoute.js'
 import studentProfileRoute from './router/studentProfileRoute.js'
 import prRoute from './router/prRoute.js'
 
-/* middleware setup */
-
-app.use(express.json());
 app.use(cors(
     {
-    origin:'https://rms-frontend-x9ue.onrender.com',
+    origin:['https://rms-frontend-x9ue.onrender.com','http://localhost:3000'],
     credentials: true,
     optionsSuccessStatus: 200,
-    Headers:['Origin','X-Api-Key','X-Requested-With','Content-Type','Accept','Authorization'],
-    "Access-Control-Allow-Origin": "https://rms-frontend-x9ue.onrender.com",
+    allowedHeaders:['Origin','X-Api-Key','X-Requested-With','Content-Type','Accept','Authorization'],
 }
 ));
 
@@ -53,7 +50,7 @@ app.get('/',(req,res)=>{
 app.use('/api/veryfyUser',verifyUserRouter);
 app.use('/api/login',loginRoute);
 app.use('/api/authenticate',authenticateRoure);
-app.use('/api/profile',professorProfileRoute);
+app.use('/api/profile',ProfileRoute);
 app.use('/api/course',courseRoute);
 app.use('/api/students',studentRoute);
 app.use('/api/studentprofile',studentProfileRoute)

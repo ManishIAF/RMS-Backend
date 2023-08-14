@@ -1,58 +1,62 @@
+import jwt from "jsonwebtoken";
 import student from "../modules/studentModel.js";
 import professor from "../modules/professorModel.js";
+import userModule from "../modules/user.module.js";
 
 const authenticate = async(req,res)=>{
+    try {
+        const token = req.cookies.validatingToken;
+        if(!token) return res.sendStatus(401);
 
-    const {username,role,email} = req.user;
+        const {userId} = jwt.verify(token,process.env.JWT_REFRESH_TOKEN_SECRET)
 
-    let Model,auth;
+        if(!userId) return res.sendStatus(401);
+        
+        const user = await userModule.findOne({_id:userId});
 
-    if(role === 'student'){
+        if(!user) return res.sendStatus(401);
 
-        Model = student;
-        auth = 'standerd';
+        if(user.refreshToken !== token)return res.sendStatus(401);
 
+        let Model,auth;
+
+        if(user?.role === 'student'){
+
+            Model = student;
+            auth = 'standerd';
+
+        }
+        
+        if(user?.role === 'professor'){
+            Model = professor
+            auth = 'moderate'
+        }
+
+        if(user?.role === 'HOD'){
+            Model = professor
+            auth = 'high'
+        }
+
+        const userInfo = await Model.findOne({email:user?.email})
+
+        const accessToken = jwt.sign({userId:user._id},process.env.JWT_ACCESS_TOKEN_SECRET,{expiresIn:'15m'})
+        // const refreshToken = jwt.sign({userId:user._id},process.env.JWT_REFRESH_TOKEN_SECRET,{expiresIn:'7d'})
+        
+        // await userModule.updateOne({_id:user?._id},{refreshToken:refreshToken});
+        
+        return res.status(200)/*.cookie("validatingToken",refreshToken,{
+            httpOnly:true,
+            // sameSite:'None',
+            // secure:false,
+            // path:'/api/authenticate'
+        })*/.send({token:accessToken,username:user?.username,profile:userInfo?.profile,firstName:userInfo?.firstName,auth,email:user?.email})
+
+    } catch (error) {
+        res.sendStatus(401)
     }
-    
-    if(role === 'professor'){
-        Model = professor
-        auth = 'moderate'
-    }
-
-    if(role === 'HOD'){
-        Model = professor
-        auth = 'high'
-    }
-
-    const userInfo = await Model.findOne({email:email})
-
-    res.status(200).send({username,profile:userInfo?.profile,firstName:userInfo?.firstName,auth,email});
 
 }
 
-const verify = async(req,res)=>{
-
-    const {role} = req.user;
-
-    let auth;
-
-    if(role === 'student'){
-
-        auth = 'standerd';
-
-    }
-    
-    if(role === 'professor'){
-        auth = 'moderate'
-    }
-
-    if(role === 'HOD'){
-        auth = 'high'
-    }
-
-    res.status(200).send({auth});
-
-}
 
 
-export {authenticate,verify};
+export {authenticate};

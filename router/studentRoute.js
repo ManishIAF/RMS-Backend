@@ -10,5 +10,6 @@ router.route('/').get(Auth,allStudentGet).post(Auth,studentPost).delete(Auth,stu
 router.route('/getone').get(Auth,singleStudentGet)
 router.route('/studentResult').get(Auth,studentResult)
 router.route('/:rollNumber').get(Auth,singleStudentGet);
+
  
 export default router;

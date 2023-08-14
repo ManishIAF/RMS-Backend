@@ -1,27 +1,30 @@
-// import result from "../modules/resultModel.js";
 import student from "../modules/studentModel.js";
-// import course from "../modules/courseModel.js";
 
 const studentProfile = async(req,res)=>{
 
     try {
 
         const {Id} = req.params;
-console.log('query : ',req.params)
-        student.findOne({_id:Id},(error,studentData)=>{
+        const studentData = await student.findOne({_id:Id}).populate({path:'userInfoId'})
 
-            if(error) return res.status(500).send('server error');
-            if(!error){
-                if(!studentData) return res.status(404).send('student not found');
-                if(studentData){
-                    // console.log(studentData);
-                    res.status(200).send(studentData);
-                }
+        if(!studentData) return res.status(404).send('student not found');
+        if(studentData){
+            const DataToSend = { 
 
+                _id:studentData?._id,
+                profile:studentData?.profile,
+                firstName:studentData?.firstName,
+                lastName:studentData?.lastName,
+                department:studentData?.department,
+                Semester:studentData?.Semester,
+                Roll_Number:studentData?.Roll_Number,
+                Registration_Number:studentData?.Regitration_Number,
+                email:studentData?.email,
+                contact:studentData?.userInfoId
+        
             }
-        })
-    
-    
+            res.status(200).send(DataToSend);
+        }
         
     } catch (error) {
 
