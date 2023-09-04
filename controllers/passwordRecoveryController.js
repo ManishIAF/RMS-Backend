@@ -12,9 +12,7 @@ try {
 
     if(!token) return res.status(404).send('token not found')
 
-    verify(token, process.env.JWT_SECRET,(error,decodedToken)=>{
-        
-        console.log('decodedToken : ',decodedToken);
+    verify(token, process.env.JWT_ACCESS_TOKEN_SECRET,(error,decodedToken)=>{
         
         if(error) return res.status(401).send('invalid token')
         res.status(200).send('valid')  
@@ -41,7 +39,7 @@ const passwordRecoveryPost = async (req, res) => {
         
         if(error) return res.status(500).send('server error');
             
-        const resetToken = jwt.sign({ _id:userData?._id }, process.env.JWT_SECRET, { expiresIn: '5m' });
+        const resetToken = jwt.sign({ _id:userData?._id }, process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: '5m' });
 
         const resetUrl = `${process.env.BASE_URL}/${resetToken}`;
         const qrCodeImage = await qrcode.toDataURL(resetUrl);
@@ -65,17 +63,13 @@ const passwordRecoveryPost = async (req, res) => {
     }
 }
 
-
-/*PUT:http://localhost:8000/api/user/resetPassword
-*/
-
 const resetPassword = async(req,res)=>{
 
     try {
 
         const {password,token} = req.body;
 
-        const decodedToken = verify(token, process.env.JWT_SECRET);
+        const decodedToken = verify(token, process.env.JWT_ACCESS_TOKEN_SECRET);
 
         if(!decodedToken) return res.status(401).send('invalid token');
 

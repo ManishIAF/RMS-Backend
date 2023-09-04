@@ -265,14 +265,14 @@ const singleStudentGet = async(req,res)=>{
 }
 
 const studentPost = async(req,res)=>{
-// xyz25806&7trU
+// xyz2580CUE&C0
   try {
 
     const {email,role} = req.user;
 
     if(role === 'HOD'){
 
-      const {Profile,firstName,lastName,Roll_Number,Registration_Number,email:studentEmail} = req.body;
+      const {Profile,firstName,lastName,Roll_Number,Registration_Number,email:studentEmail,Registration_Year,Gender,DOB} = req.body;
 
       let passpart = otpGenerator.generate(6,{lowerCaseAlphabets:true,upperCaseAlphabets:true,specialChars:true})
       const username = await studentEmail.split("@")[0]
@@ -318,6 +318,9 @@ const studentPost = async(req,res)=>{
                   profile:Profile,
                   firstName:firstName,
                   lastName:lastName,
+                  Registration_Year:Registration_Year,
+                  Gender:Gender,
+                  DOB:new Date(DOB),
                   department:profData?.department,
                   email:studentEmail,
                   Roll_Number:Roll_Number,
@@ -380,7 +383,7 @@ const studentDelete = async(req,res)=>{
     
           if(!error){
     
-            if(authorisedUser?.department != foundStudent?.department){
+            if(authorisedUser?.department !== foundStudent?.department){
               return res.status(401).send('you are not authorised')
             }
 
@@ -413,11 +416,10 @@ const studentPatch = async(req,res)=>{
   
       const {role,email} = req.user;
       
-      if(req?.user?.role === 'HOD'){
+      if(role === 'HOD'){
 
         const profData = await professor.findOne({email:email})
-  
-        const {id,Profile,firstName,lastName,Roll_Number,Regitration_Number,email:studentEmail} = req.body;
+        const {id,Profile,firstName,lastName,Roll_Number,Regitration_Number,email:studentEmail,Registration_Year,Gender,DOB} = req.body;
   
         student.findOne({email:studentEmail},(error,studentData)=>{
   
@@ -431,6 +433,9 @@ const studentPatch = async(req,res)=>{
               profile:Profile,
               firstName:firstName,
               lastName:lastName,
+              DOB:new Date(DOB),
+              Gender:Gender,
+              Registration_Year:Registration_Year,
               department:profData?.department,
               email:studentEmail,
               Roll_Number:Roll_Number,

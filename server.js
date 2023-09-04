@@ -28,11 +28,12 @@ import prRoute from './router/prRoute.js'
 
 app.use(cors(
     {
-    origin:['https://rms-frontend-x9ue.onrender.com','http://localhost:3000'],
-    credentials: true,
-    optionsSuccessStatus: 200,
-    allowedHeaders:['Origin','X-Api-Key','X-Requested-With','Content-Type','Accept','Authorization'],
-}
+        origin:['https://rms-frontend-x9ue.onrender.com','http://localhost:3000'],
+        credentials: true,
+        optionsSuccessStatus: 200,
+
+        allowedHeaders:['Origin','X-Api-Key','X-Requested-With','Content-Type','Accept','Authorization'],
+    }
 ));
 
 app.use(morgan('tiny')); //to log all the http request in console

@@ -2,6 +2,7 @@ import result from "../modules/resultModel.js";
 import student from '../modules/studentModel.js';
 import professor from '../modules/professorModel.js';
 import course from '../modules/courseModel.js';
+import resultFilter from "../middleware/resultFilter.js";
 
 const resultAllGet = async(req,res)=>{
 
@@ -15,7 +16,7 @@ const resultAllGet = async(req,res)=>{
         }
         
         if(!profData?.coursesId){
-            res.status(200).send([])
+            res.status(403).send('not authorised')
         }
 
         if(profData?.coursesId){
@@ -62,6 +63,7 @@ const resultAllGet = async(req,res)=>{
                     lastName: { $first: '$student.lastName' },
                     Roll_Number: { $first: '$student.Roll_Number' },
                     Regitration_Number: { $first: '$student.Regitration_Number' },
+                    currentSemester:{$first:'$student.Semester'},
                     Semester:{ $first: '$course.Semester' },
                     subject: { $first: '$course.subject' },
                     Internal: { $first: '$Internal' },
@@ -72,12 +74,13 @@ const resultAllGet = async(req,res)=>{
 
                 },
 
-              ]).exec((error, results) => {
+              ]).exec(async(error, results) => {
                 
                 if(error) return res.status(500).send('server error');
               
                 if(results){
-                    res.status(200).send(results);
+                    const Results = await resultFilter(results);
+                    res.status(200).send(Results);
                 }
             
             });
@@ -128,7 +131,7 @@ const resultPost = async(req,res)=>{
     const {email} = req.user;
 
     const {Roll_Number,SubjectId,Internal,Theory,Practical} = req.body;
-console.log('SubjectId : ',SubjectId)
+
     professor.findOne({email:email},(error,profData)=>{
 
         if(error){
@@ -149,7 +152,7 @@ console.log('SubjectId : ',SubjectId)
                 
                 }
 
-                if(courseData?.professorId.toString() != profData?._id.toString()){
+                if(courseData?.professorId.toString() !== profData?._id.toString()){
                 
                     res.status(401).send('course not authorised');
                 
@@ -171,7 +174,6 @@ console.log('SubjectId : ',SubjectId)
                             }
                             if(courseData?.Semester <= studentData?.Semester){
                                 result.findOne({ studentId: studentData._id, courseId: courseData._id }, (error, resultData) => {
-                                    // console.log('resultData : ',resultData);
                                     if (error) {
                                         res.status(500).send('server error');
                                     }
@@ -240,8 +242,6 @@ console.log('SubjectId : ',SubjectId)
         }
 
     })
-
-//************************************************************** */
 
 // console.log('profData : ',profData);
 
@@ -410,17 +410,13 @@ const resultdelete = async(req,res)=>{
     try {
 
         const {id:resultId} = req.params;
-        console.log('ResultId : ',req.params)
       
         result.findOneAndDelete({ _id: resultId }, (err, deletedResult) => {
             if (err) {
-                // handle error
                 res.status(500).send('server error')
             } else if (!deletedResult) {
-            // handle case where result with specified ID was not found
                 res.status(404).send('result not found')
             } else {
-                // remove the result ID from the corresponding student
                 student.findOneAndUpdate(
                     { _id: deletedResult?.studentId },
                     { $pull: { ResultId: deletedResult?._id } },
@@ -429,7 +425,7 @@ const resultdelete = async(req,res)=>{
                     (err, updatedStudent) => {
                 
                         if (err) {
-                        // handle error
+                            res.status(500).send('server error')
                         } else if(updatedStudent) {
                             res.status(200).send('data deleted')
                         }

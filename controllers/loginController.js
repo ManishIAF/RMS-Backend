@@ -32,11 +32,11 @@ import UserModel from '../modules/user.module.js'
             httpOnly:true,
             sameSite:'None',
             secure:true,
-            path:'/api/authenticate'
+            // path:'/api/authenticate'
         }).send({
             msg:'login successfully...',
             token:accessToken
-        })
+        }) 
 
     } catch (error) {
         console.log('error : ',error)

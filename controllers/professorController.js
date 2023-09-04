@@ -6,6 +6,7 @@ import otpGenerator from 'otp-generator'
 import handleMail from '../middleware/handleMail.js';
 import professor from '../modules/professorModel.js';
 import course from "../modules/courseModel.js"
+import userModule from '../modules/user.module.js';
 
 const allProfessorGet = (req,res)=>{
 
@@ -99,7 +100,6 @@ const profCourses = async(req,res)=>{
 
     try {
 
-        console.log('profCourse called')
         const { email} = req.user;
         const {profId} = req.params;
         let query = {}
@@ -152,7 +152,7 @@ const professorPost = async(req,res)=>{
         
         if(role === 'HOD'){
 
-            const {firstName,lastName,email} = req.body;
+            const {firstName,lastName,Gender,DOB,email} = req.body;
             let passpart = otpGenerator.generate(6,{lowerCaseAlphabets:true,upperCaseAlphabets:true,specialChars:true})
             const username = await email.split("@")[0]
 
@@ -198,6 +198,8 @@ const professorPost = async(req,res)=>{
                                 const newProfessor = new professor({
                                     firstName,
                                     lastName,
+                                    Gender,
+                                    DOB:new Date(DOB),
                                     email,
                                     department,
                                 })
@@ -294,8 +296,8 @@ const professorUpdate = async(req,res)=>{
     
         const {role,email} = req.user;
 
-        const {id,firstName,lastName} = req.body
-
+        const {id,firstName,lastName,Gender,DOB,email:userEmail} = req.body
+        
         if(role != 'HOD') return res.status(401).send('you are not authorised')
 
         if(role === 'HOD'){
@@ -305,17 +307,25 @@ const professorUpdate = async(req,res)=>{
             if(!authorisedProfessor) return res.status(401).send('you are not authorised');
 
             if(authorisedProfessor){
+                
                 const profData = await professor.findOne({_id:id})
+
                 if(!profData) return res.status(404).send('professor not found');
+                
                 if(profData){
-                    if (authorisedProfessor?.department === profData?.department) {
+                
+                    if(authorisedProfessor?.department === profData?.department) {
                         
                         const dataToBeUpdated = {
                             firstName:firstName,
                             lastName:lastName,
-                            email:email
+                            Gender:Gender,
+                            DOB:new Date(DOB),
+                            email:userEmail
                         }
 
+                        await userModule.updateOne({email:profData?.email},{email:userEmail})
+                        
                         professor.updateOne({_id:profData?._id},dataToBeUpdated,(error,updatedData)=>{
                            
                             if(error) return res.status(500).send('server error')

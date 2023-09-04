@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 const professorSchema = new mongoose.Schema({
     profile:String,
     firstName: String,
+    Gender:String,
+    DOB:Date,
     lastName:String,
     email: String,
     coursesId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'course' }],

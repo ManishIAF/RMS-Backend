@@ -190,7 +190,7 @@ const courseDelete = (req,res)=>{
                         if(error) return res.status(500).send('server error');
                         if(!courseData) return res.status(404).send('course not found');
                         if(courseData){
-                            if(profData?.department != courseData?.department){
+                            if(profData?.department !== courseData?.department){
                                 return res.status(401).send('you are not authorised to make changes to other department');
                             }
                             if(profData?.department === courseData?.department){

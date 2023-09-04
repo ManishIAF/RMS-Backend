@@ -4,6 +4,4 @@ const router = Router();
 
 router.route('/').get(authenticate)
 
-
-
 export default router;

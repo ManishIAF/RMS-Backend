@@ -26,10 +26,13 @@ export async function getProfile(req,res){
                     profile:data?.profile,
                     firstName:data?.firstName,
                     lastName:data?.lastName,
+                    DOB:data?.DOB,
+                    Gender:data?.Gender,
                     department:data?.department,
                     Semester:data?.Semester,
                     Roll_Number:data?.Roll_Number,
                     Registration_Number:data?.Regitration_Number,
+                    Registration_Year:data?.Registration_Year,
                     email:data?.email,
                     courses:data?.coursesId,
                     contact:data?.userInfoId
@@ -164,7 +167,6 @@ export async function updateProfile(req,res){
 
         const Body = req.body;
         const {email,role} = req.user;
-
         let Model
         if(role === 'student'){
         
