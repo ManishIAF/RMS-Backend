@@ -28,7 +28,7 @@ import prRoute from './router/prRoute.js';
 
 app.use(cors(
     {
-        origin:['https://rms-frontend-x9ue.onrender.com'],
+        origin:['https://rms-frontend-x9ue.onrender.com','https://wbsu-rms.web.app'],
         credentials: true,
         optionsSuccessStatus: 200,
         allowedHeaders:['Origin','X-Api-Key','X-Requested-With','Content-Type','Accept','Authorization'],
