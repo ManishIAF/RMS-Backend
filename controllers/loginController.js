@@ -28,6 +28,15 @@ import UserModel from '../modules/user.module.js'
 
         await UserModel.updateOne({_id:user?._id},{refreshToken:refreshToken});
 
+        let auth;
+        if (user.role === 'student') {
+            auth = 'standard';
+        } else if (user?.role === 'professor') {
+            auth = 'moderate';
+        }else if (user?.role === 'HOD') {
+            auth = 'high';
+        }
+
         res.status(200).cookie("validatingToken",refreshToken,{
             httpOnly:true,
             sameSite:'None',
@@ -35,7 +44,8 @@ import UserModel from '../modules/user.module.js'
             // path:'/api/authenticate'
         }).send({
             msg:'login successfully...',
-            token:accessToken
+            token:accessToken,
+            auth
         }) 
 
     } catch (error) {

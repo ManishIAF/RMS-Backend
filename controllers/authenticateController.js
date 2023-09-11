@@ -64,9 +64,12 @@ const authenticate = async (req, res) => {
             if (user.role === 'student') {
                 Model = student;
                 auth = 'standard';
-            } else if (user?.role === 'professor' || user?.role === 'HOD') {
+            } else if (user?.role === 'professor') {
                 Model = professor;
-                auth = user?.role === 'professor' ? 'moderate' : 'high';
+                auth = 'moderate';
+            }else if (user?.role === 'HOD') {
+                Model = professor;
+                auth = 'high';
             }
 
             const userInfo = await Model.findOne({ email: user.email });

@@ -15,23 +15,22 @@ app.use(cookieParser());
 import connect from "./database/connect.js";
 
 /*importing routes */
-import loginRoute from './router/loginRoute.js'
-import authenticateRoure from './router/authenticateRoute.js'
-import ProfileRoute from './router/ProfileRoute.js'
-import studentRoute from './router/studentRoute.js'
-import resultRoute from './router/resultRoute.js'
+import loginRoute from './router/loginRoute.js';
+import authenticateRoure from './router/authenticateRoute.js';
+import ProfileRoute from './router/ProfileRoute.js';
+import studentRoute from './router/studentRoute.js';
+import resultRoute from './router/resultRoute.js';
 import verifyUserRouter from "./router/verifyUserRoute.js";
-import professorRoute from './router/professorRoute.js'
-import courseRoute from './router/coursesRoute.js'
-import studentProfileRoute from './router/studentProfileRoute.js'
-import prRoute from './router/prRoute.js'
+import professorRoute from './router/professorRoute.js';
+import courseRoute from './router/coursesRoute.js';
+import studentProfileRoute from './router/studentProfileRoute.js';
+import prRoute from './router/prRoute.js';
 
 app.use(cors(
     {
-        origin:['https://rms-frontend-x9ue.onrender.com','http://localhost:3000'],
+        origin:['https://rms-frontend-x9ue.onrender.com'],
         credentials: true,
         optionsSuccessStatus: 200,
-
         allowedHeaders:['Origin','X-Api-Key','X-Requested-With','Content-Type','Accept','Authorization'],
     }
 ));
