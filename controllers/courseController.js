@@ -67,7 +67,6 @@ const coursePost = async(req,res)=>{
 
                 if(profData){
 
-                    console.log('profData : ',profData?.coursesId?.length);
                     if(profData?.coursesId?.length === 1){
                         
                         return res.status(409).send(`course has alresdy been alotted to Prof ${profData?.firstName}`)
@@ -196,7 +195,7 @@ const courseDelete = (req,res)=>{
                             if(profData?.department === courseData?.department){
 
                                 professor.updateOne({_id:profData?._id},{$pull:{coursesId:courseId}},(error,updatedProfData)=>{
-                                    console.log('updatedProfData : ',updatedProfData);
+
                                     if(error) return res.status(500).send('server error');
 
                                     if(updatedProfData?.modifiedCount === 1){
@@ -228,7 +227,6 @@ const courseDelete = (req,res)=>{
 
     } catch (error) {
 
-        console.log(error);
         return res.status(500).send('server error');
         
     }

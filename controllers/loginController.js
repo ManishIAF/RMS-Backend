@@ -23,7 +23,7 @@ import UserModel from '../modules/user.module.js'
 
         if(!valid) return res.status(401).send('invalid password');
         
-        const accessToken = jwt.sign({userId:user._id},process.env.JWT_ACCESS_TOKEN_SECRET,{expiresIn:'15m'})
+        const accessToken = jwt.sign({userId:user._id},process.env.JWT_ACCESS_TOKEN_SECRET,{expiresIn:'15s'})
         const refreshToken = jwt.sign({userId:user._id},process.env.JWT_REFRESH_TOKEN_SECRET,{expiresIn:'7d'})
 
         await UserModel.updateOne({_id:user?._id},{refreshToken:refreshToken});
@@ -41,7 +41,7 @@ import UserModel from '../modules/user.module.js'
             httpOnly:true,
             sameSite:'None',
             secure:true,
-            // path:'/api/authenticate'
+            // path:'/api/authenticate/refresh-token'
         }).send({
             msg:'login successfully...',
             token:accessToken,
@@ -49,7 +49,6 @@ import UserModel from '../modules/user.module.js'
         }) 
 
     } catch (error) {
-        console.log('error : ',error)
         return res.status(500).send({error});
     }
 

@@ -28,7 +28,7 @@ import prRoute from './router/prRoute.js';
 
 app.use(cors(
     {
-        origin:['https://rms-frontend-x9ue.onrender.com','https://wbsu-rms.web.app'],
+        origin:['https://wbsu-rms.web.app','http://localhost:3000'],
         credentials: true,
         optionsSuccessStatus: 200,
         allowedHeaders:['Origin','X-Api-Key','X-Requested-With','Content-Type','Accept','Authorization'],
@@ -37,8 +37,6 @@ app.use(cors(
 
 app.use(morgan('tiny')); //to log all the http request in console
 app.disable('x-powered-by'); //less hackers know about our stack
-
-const  port = 8000;
 
 app.get('/',(req,res)=>{
 
@@ -68,7 +66,7 @@ const PORT = process.env.PORT || 5000;
 connect(process.env.MONGODB_URI).then(()=>{
     try {
          app.listen(PORT,()=>{
-            console.log(`Server connected to http://localhost:${port} `)
+            console.log(`Server connected to http://localhost:${PORT} `)
         })
         
     } catch (error) {

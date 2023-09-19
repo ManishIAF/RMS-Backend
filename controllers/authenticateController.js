@@ -4,31 +4,44 @@ import professor from "../modules/professorModel.js";
 import userModule from "../modules/user.module.js";
 
 
-const cookieValidation = async (refreshToken) => {
+const refreshToken = async (req,res) => {
     try {
 
-        const validRefreshToken = jwt.verify(refreshToken, process.env.JWT_REFRESH_TOKEN_SECRET);
+        console.log('refresh token process atarted...')
+        
+        const refreshToken = req.cookies.validatingToken;
+        console.log('refreshToken : ',refreshToken);
+
+        if (!refreshToken) return res.sendStatus(401);
+        console.log('validRefreshToken...');
+
+        const validRefreshToken = jwt.verify(refreshToken,process.env.JWT_REFRESH_TOKEN_SECRET);
+        console.log('validRefreshToken : ',validRefreshToken);
 
         if (!validRefreshToken) {
-            return { validation: false };
+            return res.sendStatus(401);
         }
 
         const user = await userModule.findOne({ _id: validRefreshToken.userId });
 
         if (!user) {
-            return { validation: false };
+            return res.sendStatus(401);
+        }
+console.log(user?.refreshToken === refreshToken);
+        if (user?.refreshToken !== refreshToken) {
+            return res.sendStatus(401);
         }
 
-        if (user.refreshToken !== refreshToken) {
-            return { validation: false };
-        }
+        console.log('reached end...');
+        const newAccessToken = jwt.sign({ userId: user._id }, process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: '15s' });
 
-        const newAccessToken = jwt.sign({ userId: user._id }, process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
-
-        return { validation: true, newToken: newAccessToken, user };
+        return res.status(200).send(newAccessToken);
     
     } catch (error) {
-        return { validation: false};
+
+        console.log('error : ',error);
+        return res.sendStatus(401);
+
     }
 };
 
@@ -38,25 +51,26 @@ const authenticate = async (req, res) => {
 
         if (!token) return res.sendStatus(401);
 
-        jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET, async (error, validAccessToken) => {
+        jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET, async(error, validAccessToken) => {
             
-            let newAccessToken,newUser;
 
             if (error && error.name === 'TokenExpiredError') {
 
-                const refreshToken = req.cookies.validatingToken;
+                // const refreshToken = req.cookies.validatingToken;
 
-                if (!refreshToken) return res.status(401).send({ error: "No refresh token provided" });
+                // if (!refreshToken) return res.status(401).send({ error: "No refresh token provided" });
 
-                const { validation, newToken, user } = await cookieValidation(refreshToken);
+                // const { validation, newToken, user } = await cookieValidation(refreshToken);
 
-                if (!validation) return res.status(401).send({ error: "Token validation failed" });
+                // if (!validation) return res.status(401).send({ error: "Token validation failed" });
 
-                newAccessToken = newToken;
-                newUser = user
+                // newAccessToken = newToken;
+                // newUser = user
+                console.log('token expired...')
+                return res.sendStatus(403)
             }
 
-            const user = newUser ? newUser : await userModule.findOne({ _id: validAccessToken?.userId });
+            const user = await userModule.findOne({ _id: validAccessToken?.userId });
 
             if (!user) return res.sendStatus(401);
 
@@ -72,10 +86,10 @@ const authenticate = async (req, res) => {
                 auth = 'high';
             }
 
-            const userInfo = await Model.findOne({ email: user.email });
+            const userInfo = await Model?.findOne({ email: user?.email });
 
             return res.status(200).send({
-                token: newAccessToken || token,
+                token: token,
                 username: user.username,
                 profile: userInfo?.profile,
                 firstName: userInfo?.firstName,
@@ -92,4 +106,4 @@ const authenticate = async (req, res) => {
 
 
 
-export {authenticate};
+export {authenticate,refreshToken};

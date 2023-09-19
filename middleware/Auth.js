@@ -6,12 +6,10 @@ import UserSchema from "../modules/user.module.js";
 const Auth = async(req,res,next) => {
 
     try {
-
         const token = req.headers.authorization.split(" ")[1];
-
         const decodedToken = verify(token, process.env.JWT_ACCESS_TOKEN_SECRET);
         const {userId} = decodedToken;
-        
+
         if(userId){
             
             const refs = await UserSchema.findOne({_id:userId});

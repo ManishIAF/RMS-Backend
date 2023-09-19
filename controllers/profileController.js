@@ -167,7 +167,9 @@ export async function updateProfile(req,res){
 
         const Body = req.body;
         const {email,role} = req.user;
+        
         let Model
+
         if(role === 'student'){
         
             Model = studentModel;
@@ -179,7 +181,9 @@ export async function updateProfile(req,res){
             Model = professor
         
         }
-
+        
+        console.log('email : ',email)
+        
         Model.findOne({email:email},async(error,userInfo)=>{
 
         if(error){
@@ -187,12 +191,12 @@ export async function updateProfile(req,res){
             return res.status(500).send('server error');
 
         }
-
+        console.log('userInfo : ',userInfo)
         if(!error){
+            console.log('userInfo?.userInfoId : ',userInfo?.userInfoId)
+            if(!userInfo?._id) return res.status(404).send('data not present')
 
-            if(!userInfo?.userInfoId) return res.status(404).send('data not present')
-
-            if(userInfo?.userInfoId){
+            if(userInfo?._id){
 
                 if(Body?.profile){
 
