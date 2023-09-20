@@ -23,7 +23,7 @@ import UserModel from '../modules/user.module.js'
 
         if(!valid) return res.status(401).send('invalid password');
         
-        const accessToken = jwt.sign({userId:user._id},process.env.JWT_ACCESS_TOKEN_SECRET,{expiresIn:'15s'})
+        const accessToken = jwt.sign({userId:user._id},process.env.JWT_ACCESS_TOKEN_SECRET,{expiresIn:'1d'})
         const refreshToken = jwt.sign({userId:user._id},process.env.JWT_REFRESH_TOKEN_SECRET,{expiresIn:'7d'})
 
         await UserModel.updateOne({_id:user?._id},{refreshToken:refreshToken});
