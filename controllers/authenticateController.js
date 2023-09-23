@@ -17,7 +17,7 @@ const refreshToken = async (req,res) => {
             return res.sendStatus(401);
         }
 
-        const user = await userModule.findOne({ _id: validRefreshToken.userId });
+        const user = await userModule.findOne({ _id: validRefreshToken.userId});
 
         if (!user) {
             return res.sendStatus(401);
@@ -26,14 +26,12 @@ const refreshToken = async (req,res) => {
             return res.sendStatus(401);
         }
 
-        const newAccessToken = jwt.sign({ userId: user._id }, process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: '1d' });
-
+        const newAccessToken = jwt.sign({ userId: user._id }, process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: '2m' });
         return res.status(200).send(newAccessToken);
     
     } catch (error) {
 
-        console.log('error : ',error);
-        return res.sendStatus(401);l
+        return res.sendStatus(401);
 
     }
 };
@@ -48,18 +46,6 @@ const authenticate = async (req, res) => {
             
 
             if (error && error.name === 'TokenExpiredError') {
-
-                // const refreshToken = req.cookies.validatingToken;
-
-                // if (!refreshToken) return res.status(401).send({ error: "No refresh token provided" });
-
-                // const { validation, newToken, user } = await cookieValidation(refreshToken);
-
-                // if (!validation) return res.status(401).send({ error: "Token validation failed" });
-
-                // newAccessToken = newToken;
-                // newUser = user
-                console.log('token expired...')
                 return res.sendStatus(403)
             }
 

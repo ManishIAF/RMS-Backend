@@ -79,7 +79,7 @@ const resultAllGet = async(req,res)=>{
                 if(error) return res.status(500).send('server error');
               
                 if(results){
-                    const Results = await resultFilter(results);
+                    const Results = await Promise.resolve(resultFilter(results));
                     res.status(200).send(Results);
                 }
             

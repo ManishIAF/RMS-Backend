@@ -30,7 +30,7 @@ app.use(cors(
     {
         origin:['https://wbsu-rms.web.app','http://localhost:3000'],
         credentials: true,
-        optionsSuccessStatus: 200,
+        // optionsSuccessStatus: 200,
         allowedHeaders:['Origin','X-Api-Key','X-Requested-With','Content-Type','Accept','Authorization'],
     }
 ));

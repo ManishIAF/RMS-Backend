@@ -31,7 +31,11 @@ const Auth = async(req,res,next) => {
         
 
     } catch (error) {
-    
+        if (error && error.name === 'TokenExpiredError') {
+
+            return res.status(403).send("Authentication failed...")
+
+        }
         return res.status(401).send("Authentication failed...")
     }
 

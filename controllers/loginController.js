@@ -2,15 +2,7 @@ import {compare } from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import UserModel from '../modules/user.module.js'
 
-/** POST:http://localhost:8000/api/login
- *@Body:{
-
-    "username":"example123",
-    "password":"admin123",
-
- }
- */
- export async function login(req,res){
+export async function login(req,res){
     try {
 
         const {username,password} = req.body;
@@ -23,7 +15,7 @@ import UserModel from '../modules/user.module.js'
 
         if(!valid) return res.status(401).send('invalid password');
         
-        const accessToken = jwt.sign({userId:user._id},process.env.JWT_ACCESS_TOKEN_SECRET,{expiresIn:'1d'})
+        const accessToken = jwt.sign({userId:user._id},process.env.JWT_ACCESS_TOKEN_SECRET,{expiresIn:'2m'})
         const refreshToken = jwt.sign({userId:user._id},process.env.JWT_REFRESH_TOKEN_SECRET,{expiresIn:'7d'})
 
         await UserModel.updateOne({_id:user?._id},{refreshToken:refreshToken});
